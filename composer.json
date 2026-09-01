@@ -1,0 +1,32 @@
+{
+    "name": "phpbbmodders/sfs_companion",
+    "type": "phpbb-extension",
+    "description": "Companion tools for rmcgirr83/stopforumspam: a browsable, prunable log of what it's blocked, and a manual spammer lookup/removal tool.",
+    "homepage": "https://www.phpbbmodders.com/",
+    "version": "1.0.0",
+    "time": "2026-09-01",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Sheer",
+            "homepage": "https://www.phpbbguru.net/community/",
+            "role": "Past Developer"
+        },
+        {
+            "name": "phpBB Modders",
+            "email": "board@phpbbmodders.com",
+            "homepage": "https://www.phpbbmodders.com/",
+            "role": "Maintainer"
+        }
+    ],
+    "require": {
+        "php": ">=8.0.0",
+        "rmcgirr83/stopforumspam": ">=1.5.0"
+    },
+    "extra": {
+        "display-name": "SFS Companion",
+        "soft-require": {
+            "phpbb/phpbb": ">=3.3.0,<4.0.0@dev"
+        }
+    }
+}

@@ -1,0 +1,66 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{PAGE_TITLE}</h1>
+
+<p>{L_ACP_SFS_SCAN_EXPLAIN}</p>
+
+<form id="sfs_scan" method="post" action="{U_ACTION}">
+	<fieldset class="display-options">
+		{L_REGISTERED}: <select name="f">{S_PERIOD_SELECT}</select>
+		{L_SEARCH_OPTION}: <select name="f_opt">{FILTER_OPTIONS}</select>
+		<input class="inputbox autowidth" type="text" name="filter" value="{FILTER}" />
+		{L_SELECT_SORT}: {S_MODE_SELECT} {S_ORDER_SELECT}
+		<label><input type="checkbox" name="no_posts" value="1"<!-- IF NOPOSTS --> checked="checked"<!-- ENDIF --> /> {L_NO_POSTS_ONLY}</label>
+		<label><input type="checkbox" name="s_inactive" value="1"<!-- IF UNACTIVE --> checked="checked"<!-- ENDIF --> /> {L_UNACTIVE}</label>
+		<input class="button2" type="submit" name="search" value="{L_GO}" />
+	</fieldset>
+
+	<p>{TOTAL_USERS} &middot; {EXEC_TIME}</p>
+
+	<table class="table1">
+		<thead>
+			<tr>
+				<th>&nbsp;</th>
+				<th>{L_USER_NAME}</th>
+				<th>{L_SORT_IP}</th>
+				<th>{L_USER_EMAIL}</th>
+				<th>{L_SORT_POST}</th>
+				<th>{L_SORT_JOINED}</th>
+				<th>{L_LAST_VISIT}</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- BEGIN row -->
+			<tr class="{row.CLASS}">
+				<td style="text-align: center;"><input type="checkbox" name="id_list[]" value="{row.USER_ID}" /></td>
+				<td>{row.USER_NAME}</td>
+				<td><!-- IF row.S_USER_IP --><a href="{row.S_USER_IP}">{row.USER_IP}</a><!-- ELSE -->{row.USER_IP}<!-- ENDIF --></td>
+				<td>{row.USER_EMAIL}</td>
+				<td><a href="{row.U_POSTS}">{row.USER_POSTS}</a></td>
+				<td>{row.USER_REG_DATE}</td>
+				<td>{row.LAST_VISIT}</td>
+				<td><a href="{row.U_FULL_CHECK}">{L_FULL_CHECK}</a></td>
+			</tr>
+			<!-- BEGINELSE -->
+			<tr>
+				<td colspan="8" style="text-align: center;">{L_NOT_FIND}</td>
+			</tr>
+			<!-- END row -->
+		</tbody>
+	</table>
+
+	<fieldset class="display-options">
+		<input class="button2" type="submit" name="delmarked" value="{L_DELETE_SELECTED}" />
+	</fieldset>
+
+	<!-- IF .pagination -->
+	<div class="pagination">
+		{PAGINATION}
+	</div>
+	<!-- ENDIF -->
+
+	{S_FORM_TOKEN}
+</form>
+
+<!-- INCLUDE overall_footer.html -->

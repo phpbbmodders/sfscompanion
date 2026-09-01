@@ -1,0 +1,47 @@
+services:
+    phpbbmodders.sfs_companion.core.functions:
+        class: phpbbmodders\sfs_companion\core\functions
+        arguments:
+            - '@dbal.conn'
+            - '@user'
+            - '@template'
+            - '@request'
+            - '@config'
+            - '@rmcgirr83.stopforumspam.core.sfsapi'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+
+    phpbbmodders.sfs_companion.controller.finder:
+        class: phpbbmodders\sfs_companion\controller\finder
+        arguments:
+            - '@template'
+            - '@request'
+            - '@controller.helper'
+            - '@user'
+            - '@auth'
+            - '@phpbbmodders.sfs_companion.core.functions'
+
+    phpbbmodders.sfs_companion.listener:
+        class: phpbbmodders\sfs_companion\event\listener
+        arguments:
+            - '@controller.helper'
+            - '@template'
+            - '@request'
+            - '@auth'
+            - '@dbal.conn'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+        tags:
+            - { name: event.listener }
+
+    phpbbmodders.sfs_companion.cron.task.prune_logs:
+        class: phpbbmodders\sfs_companion\cron\task\prune_logs
+        arguments:
+            - '@config'
+            - '@dbal.conn'
+            - '@user'
+            - '@log'
+        calls:
+            - [set_name, [cron.task.prune_logs]]
+        tags:
+            - { name: cron.task }
