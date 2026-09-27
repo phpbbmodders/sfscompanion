@@ -3,6 +3,7 @@
  *
  * SFS Companion extension for the phpBB Forum Software package
  *
+ * @copyright (c) 2015-2019, Sheer, https://www.phpbbguru.net/community/
  * @copyright (c) 2026, phpBB Modders, https://www.phpbbmodders.com/
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
