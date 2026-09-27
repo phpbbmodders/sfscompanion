@@ -7,7 +7,7 @@
 *
 */
 
-namespace phpbbmodders\sfs_companion\event;
+namespace phpbbmodders\sfscompanion\event;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -36,7 +36,7 @@ class listener implements EventSubscriberInterface
 
 	/** SFS log_operation values this extension manages, and which log_type each lives under */
 	const SFS_BLOCK_OPS = array('LOG_SFS_MESSAGE');
-	const SFS_ERROR_OPS = array('LOG_SFS_DOWN', 'LOG_SFS_DOWN_USER_ALLOWED');
+	const SFS_ERROR_OPS = array('LOG_SFS_DOWN', 'LOG_SFS_DOWN_USER_ALLOWED', 'LOG_SFS_CURL_ERROR', 'LOG_SFS_NEED_CURL');
 
 	public function __construct(
 		\phpbb\controller\helper $helper,
@@ -72,8 +72,8 @@ class listener implements EventSubscriberInterface
 	{
 		$lang_set_ext = $event['lang_set_ext'];
 		$lang_set_ext[] = array(
-			'ext_name' => 'phpbbmodders/sfs_companion',
-			'lang_set' => 'sfs_companion',
+			'ext_name' => 'phpbbmodders/sfscompanion',
+			'lang_set' => 'sfscompanion',
 		);
 		$event['lang_set_ext'] = $lang_set_ext;
 	}
@@ -99,7 +99,7 @@ class listener implements EventSubscriberInterface
 		$member = $event['member'];
 
 		$this->template->assign_vars(array(
-			'U_CHK_SFS'	=> $this->helper->route('phpbbmodders_sfs_companion_finder', array('u' => $member['user_id'])),
+			'U_CHK_SFS'	=> $this->helper->route('phpbbmodders_sfscompanion_finder', array('u' => $member['user_id'])),
 		));
 	}
 
@@ -113,7 +113,7 @@ class listener implements EventSubscriberInterface
 		$user_id = $event['user_row']['user_id'];
 
 		$this->template->assign_vars(array(
-			'U_CHK_SFS'	=> $this->helper->route('phpbbmodders_sfs_companion_finder', array('u' => $user_id)),
+			'U_CHK_SFS'	=> $this->helper->route('phpbbmodders_sfscompanion_finder', array('u' => $user_id)),
 		));
 	}
 
@@ -126,7 +126,7 @@ class listener implements EventSubscriberInterface
 	*/
 	public function filter_sfs_logs($event)
 	{
-		if ($this->request->variable('i', '') !== '-phpbbmodders-sfs_companion-acp-main_module')
+		if ($this->request->variable('i', '') !== '-phpbbmodders-sfscompanion-acp-main_module')
 		{
 			return;
 		}

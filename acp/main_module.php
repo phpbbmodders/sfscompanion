@@ -7,19 +7,19 @@
 *
 */
 
-namespace phpbbmodders\sfs_companion\acp;
+namespace phpbbmodders\sfscompanion\acp;
 
 class main_module
 {
-	var $u_action;
-	var $tpl_name;
-	var $page_title;
+	public $u_action;
+	public $tpl_name;
+	public $page_title;
 
 	function main($id, $mode)
 	{
 		global $phpbb_container;
 
-		$sfs = $phpbb_container->get('phpbbmodders.sfs_companion.core.functions');
+		$sfs = $phpbb_container->get('phpbbmodders.sfscompanion.core.functions');
 
 		switch ($mode)
 		{
@@ -45,19 +45,19 @@ class main_module
 	{
 		global $config, $request, $template, $user;
 
-		add_form_key('sfs_companion_settings');
+		add_form_key('sfscompanion_settings');
 
 		$this->tpl_name = 'acp_sfs_settings';
 		$this->page_title = $user->lang('ACP_SFS_SETTINGS');
 
 		if ($request->is_set_post('submit'))
 		{
-			if (!check_form_key('sfs_companion_settings'))
+			if (!check_form_key('sfscompanion_settings'))
 			{
 				trigger_error($user->lang['FORM_INVALID'] . adm_back_link($this->u_action), E_USER_WARNING);
 			}
 
-			$config->set('sfsc_expire_days', $request->variable('sfsc_expire_days', 0));
+			$config->set('sfsc_expire_days', max(0, $request->variable('sfsc_expire_days', 0)));
 
 			trigger_error($user->lang['CONFIG_UPDATED'] . adm_back_link($this->u_action));
 		}
@@ -93,7 +93,7 @@ class main_module
 			return;
 		}
 
-		add_form_key('sfs_companion_' . $view);
+		add_form_key('sfscompanion_' . $view);
 
 		$this->tpl_name = 'acp_sfs_logs';
 		$this->page_title = $user->lang(($view === 'blocks') ? 'ACP_SFS_BLOCKS' : 'ACP_SFS_ERRORS');
@@ -107,15 +107,19 @@ class main_module
 		$sort_dir	= $request->variable('sd', 'd');
 		$isearch	= $request->variable('isearch', '');
 
-		$ops = ($view === 'blocks') ? array('LOG_SFS_MESSAGE') : array('LOG_SFS_DOWN', 'LOG_SFS_DOWN_USER_ALLOWED');
+		// LOG_SFS_CURL_ERROR/LOG_SFS_NEED_CURL are logged by
+		// rmcgirr83/stopforumspam's own sfsapi service - the same service
+		// this extension's own lookups/reports go through - so they belong
+		// in "errors" alongside the registration/posting-time LOG_SFS_DOWN* entries.
+		$ops = ($view === 'blocks') ? array('LOG_SFS_MESSAGE') : array('LOG_SFS_DOWN', 'LOG_SFS_DOWN_USER_ALLOWED', 'LOG_SFS_CURL_ERROR', 'LOG_SFS_NEED_CURL');
 
 		if ($deletemark || $deleteall)
 		{
-			if (!check_form_key('sfs_companion_' . $view))
-			{
-				trigger_error($user->lang['FORM_INVALID'] . adm_back_link($this->u_action), E_USER_WARNING);
-			}
-
+			// confirm_box() below provides this action's CSRF protection -
+			// check_form_key() is not used here because its token isn't
+			// carried through the confirm_box() round trip, matching how
+			// phpBB core's own confirm-then-delete actions are guarded
+			// (e.g. acp_reasons.php).
 			if (confirm_box(true))
 			{
 				$sql_where = ' AND ' . $db->sql_in_set('log_operation', $ops);
@@ -228,12 +232,11 @@ class main_module
 
 		$filter_options = array(1 => 'ip', 2 => 'email');
 		$per_page = 6;
-		$fail_chk = false;
 
 		$this->tpl_name = 'acp_sfs_scan';
 		$this->page_title = $user->lang('ACP_SFS_SCAN');
 
-		add_form_key('sfs_companion_scan');
+		add_form_key('sfscompanion_scan');
 
 		if ($full_check)
 		{
@@ -295,28 +298,56 @@ class main_module
 
 		if ($delmarked)
 		{
-			if (!check_form_key('sfs_companion_scan'))
-			{
-				trigger_error($user->lang['FORM_INVALID'] . adm_back_link($this->u_action), E_USER_WARNING);
-			}
-
+			// confirm_box() below provides this action's CSRF protection -
+			// check_form_key() is not used here because its token isn't
+			// carried through the confirm_box() round trip, matching how
+			// phpBB core's own confirm-then-delete actions are guarded
+			// (e.g. acp_reasons.php).
 			if (confirm_box(true))
 			{
 				if (sizeof($users))
 				{
+					// $users is already the exact set of checked ids - no
+					// pagination offset applies on top of that, or a page
+					// beyond the first would skip straight past all of them.
 					$sql = 'SELECT user_id, user_email, username, user_ip
 						FROM ' . USERS_TABLE . '
 						WHERE ' . $db->sql_in_set('user_id', array_map('intval', $users)) . $sql_where . $order_by;
-					$result = $db->sql_query_limit($sql, $per_page, $start);
+					$result = $db->sql_query($sql);
+
+					$deleted_count = $report_failed_count = $backup_failed_count = 0;
 
 					while ($row = $db->sql_fetchrow($result))
 					{
-						$sfs->report_to_sfs($row['username'], $row['user_ip'], $row['user_email']);
-						$sfs->ban_and_delete($row['user_id'], $row['username'], $row['user_ip'], $row['user_email']);
+						$reported = $sfs->report_to_sfs($row['username'], $row['user_ip'], $row['user_email']);
+						$deleted = $sfs->ban_and_delete($row['user_id'], $row['username'], $row['user_ip'], $row['user_email']);
+
+						if (!$deleted)
+						{
+							$backup_failed_count++;
+							continue;
+						}
+
+						$deleted_count++;
+
+						if (!$reported)
+						{
+							$report_failed_count++;
+						}
 					}
 					$db->sql_freeresult($result);
 
-					$msg = $user->lang['SUCSESS_DELETE'];
+					$msg = sprintf($user->lang['SUCSESS_DELETE_COUNT'], $deleted_count);
+
+					if ($report_failed_count)
+					{
+						$msg .= '<br />' . sprintf($user->lang['FAIL_ADD_DATA_COUNT'], $report_failed_count);
+					}
+
+					if ($backup_failed_count)
+					{
+						$msg .= '<br />' . sprintf($user->lang['FAIL_BACKUP_COUNT'], $backup_failed_count);
+					}
 				}
 				else
 				{
@@ -347,7 +378,7 @@ class main_module
 		$current_time = time();
 		$day = 86400;
 		$periods = array(0 => $day, 1 => $day * 7, 2 => $day * 30, 3 => $day * 365, 4 => 0);
-		$labels = array(0 => 'PER_DAY', 1 => 'PER_WEEK', 2 => 'PER_MOUNTH', 3 => 'PER_YEAR', 4 => 'PER_ALL_TIME');
+		$labels = array(0 => 'PER_DAY', 1 => 'PER_WEEK', 2 => 'PER_MONTH', 3 => 'PER_YEAR', 4 => 'PER_ALL_TIME');
 
 		$action = isset($periods[$action]) ? $action : 0;
 		$period = $periods[$action] ? ($current_time - $periods[$action]) : 0;
@@ -381,6 +412,7 @@ class main_module
 			$check = $sfs->check_stopforumspam($row['username'], $row['user_ip'], $row['user_email']);
 
 			$em = $nick = $banned_ip = false;
+			$fail_chk = false;
 
 			if ($check === false)
 			{
@@ -410,23 +442,18 @@ class main_module
 
 			$template->assign_block_vars('row', array(
 				'USER_ID'			=> $row['user_id'],
-				'IS_FIND'			=> ($banned_ip || $em || $nick || empty($row['user_ip'])),
 				'CLASS'				=> $class,
-				'SPAM_MAIL'			=> $em,
-				'SPAM_NICK'			=> $nick,
-				'S_IP_FIND'			=> ($banned_ip || empty($row['user_ip'])),
 
 				'USER_REG_DATE'		=> $user->format_date($row['user_regdate']),
 				'LAST_VISIT'		=> ($row['user_lastvisit']) ? $user->format_date($row['user_lastvisit']) : $user->lang['NEVER'],
-				'USER_NAME'			=> '<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=viewprofile&amp;u=' . (int) $row['user_id']) . '">' . $row['username'] . '</a>',
-				'USER_EMAIL'		=> $row['user_email'],
+				'USER_NAME'			=> '<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=viewprofile&amp;u=' . (int) $row['user_id']) . '">' . htmlspecialchars($row['username']) . '</a>',
+				'USER_EMAIL'		=> htmlspecialchars($row['user_email']),
 				'USER_POSTS'		=> $row['user_posts'],
-				'USER_IP'			=> (!empty($row['user_ip'])) ? $row['user_ip'] : $user->lang['READ_COMMENT'],
+				'USER_IP'			=> (!empty($row['user_ip'])) ? htmlspecialchars($row['user_ip']) : $user->lang['READ_COMMENT'],
 				'U_POSTS'			=> append_sid("{$phpbb_root_path}search.$phpEx", 'author_id=' . (int) $row['user_id'] . '&sr=posts'),
 				'S_USER_IP'			=> (!empty($row['user_ip'])) ? $this->u_action . '&amp;whois=true&amp;ip=' . $row['user_ip'] : '',
 				'U_FULL_CHECK'		=> $this->u_action . '&amp;full_check=true&amp;ch_user=' . (int) $row['user_id'],
 				'S_FAIL_CHK'		=> $fail_chk,
-				'S_USER_INACTIVE'	=> $row['user_inactive_reason'],
 			));
 		}
 		$db->sql_freeresult($result);

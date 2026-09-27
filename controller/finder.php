@@ -7,9 +7,9 @@
 *
 */
 
-namespace phpbbmodders\sfs_companion\controller;
+namespace phpbbmodders\sfscompanion\controller;
 
-use phpbbmodders\sfs_companion\core\functions as sfs_functions;
+use phpbbmodders\sfscompanion\core\functions as sfs_functions;
 
 class finder
 {
@@ -56,7 +56,7 @@ class finder
 		}
 
 		$id = $this->request->variable('u', 0);
-		$url = $this->helper->route('phpbbmodders_sfs_companion_finder', array('u' => $id));
+		$url = $this->helper->route('phpbbmodders_sfscompanion_finder', array('u' => $id));
 
 		// full_check() renders its own header/body/footer and terminates via
 		// exit_handler() - matching the original, which behaves the same way.

@@ -7,7 +7,7 @@
 *
 */
 
-namespace phpbbmodders\sfs_companion\migrations;
+namespace phpbbmodders\sfscompanion\migrations;
 
 class install_1_0_0 extends \phpbb\db\migration\migration
 {

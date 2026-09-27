@@ -3,7 +3,7 @@
 *
 * @package phpBB Extension - SFS Companion
 * @copyright (c) 2026 phpBB Modders
-* @license GNU General Public License, version 2 (GPL-2.0)
+* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
 */
 
@@ -65,6 +65,12 @@ $lang = array_merge($lang, array(
 	'DESCENDING'						=> 'Descending',
 	'REGISTERED'						=> 'Registered',
 
+	'PER_DAY'							=> 'Today',
+	'PER_WEEK'							=> 'This week',
+	'PER_MONTH'							=> 'This month',
+	'PER_YEAR'							=> 'This year',
+	'PER_ALL_TIME'						=> 'All time',
+
 	'SEARCH_OPTION'						=> 'Search by',
 	'SELECT_SORT'						=> 'Sort by',
 	'NO_POSTS_ONLY'						=> 'Only users with no posts',
@@ -76,12 +82,17 @@ $lang = array_merge($lang, array(
 	'DELETE_SELECTED'					=> 'Report and delete selected',
 	'LIST_USERS'						=> 'Users: %s',
 	'EXEC_TIME'							=> 'Scan took %s seconds',
+	'STATUS'							=> 'Status',
+	'SFS_CHECK_FAILED'					=> 'Check failed',
+	'NONE_SELECTED'						=> 'No users were selected.',
+	'READ_COMMENT'						=> 'No IP recorded',
 
 	'SFS'								=> 'Check via StopForumSpam',
 	'RESUME'							=> 'Summary',
 	'SFS_INFO'							=> 'StopForumSpam report',
 	'NOT_SPAMMER'						=> 'This does not look like a spammer.',
 	'SPAMMER'							=> 'This is very likely a spammer.',
+	'SFSC_SPAM_REASON'					=> 'Spam',
 	'POSSIBLE_YES'						=> 'This may be a spammer.',
 	'IP_FIND'							=> 'IP address on record %d time(s).',
 	'IP_NOT_FIND'						=> 'No record of this IP address.',
@@ -94,9 +105,13 @@ $lang = array_merge($lang, array(
 	'ADD_DATA'							=> 'Report to StopForumSpam',
 	'ADD_AND_DELETE'					=> 'Report to StopForumSpam and delete this user',
 	'FAIL_ADD_DATA'						=> 'Failed to report this user to StopForumSpam - check the API key configured for rmcgirr83/stopforumspam.',
+	'FAIL_ADD_DATA_COUNT'				=> '%d user(s) were deleted but could not be reported to StopForumSpam - check the API key configured for rmcgirr83/stopforumspam.',
+	'FAIL_BACKUP'						=> 'Could not save a backup of this account before deletion - the account was NOT deleted. Check that store/sfscompanion/ is writable.',
+	'FAIL_BACKUP_COUNT'					=> '%d user(s) were left untouched because a backup could not be saved - check that store/sfscompanion/ is writable.',
 	'CONFIRM_DELETE'					=> 'Report this user to StopForumSpam and permanently delete their account? This cannot be undone.',
-	'SUCSESS_DELETE'					=> 'User reported and deleted. A backup of their account row was saved to store/sfs_companion/.',
-	'WARNING_MESSAGE'					=> 'This action is irreversible. A backup of each deleted user\'s row is saved to store/sfs_companion/ first.',
+	'SUCSESS_DELETE'					=> 'User reported and deleted. A backup of their account row was saved to store/sfscompanion/.',
+	'SUCSESS_DELETE_COUNT'				=> 'Reported and deleted %d user(s). A backup of each account row was saved to store/sfscompanion/.',
+	'WARNING_MESSAGE'					=> 'This action is irreversible. A backup of each deleted user\'s row is saved to store/sfscompanion/ first.',
 
 	'WHOIS'								=> 'WHOIS',
 

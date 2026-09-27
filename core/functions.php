@@ -7,7 +7,7 @@
 *
 */
 
-namespace phpbbmodders\sfs_companion\core;
+namespace phpbbmodders\sfscompanion\core;
 
 use rmcgirr83\stopforumspam\core\sfsapi;
 
@@ -35,6 +35,9 @@ class functions
 	/** @var \phpbb\config\config */
 	protected $config;
 
+	/** @var \phpbb\auth\auth */
+	protected $auth;
+
 	/** @var sfsapi */
 	protected $sfsapi;
 
@@ -47,6 +50,7 @@ class functions
 		\phpbb\template\template $template,
 		\phpbb\request\request_interface $request,
 		\phpbb\config\config $config,
+		\phpbb\auth\auth $auth,
 		sfsapi $sfsapi,
 		$phpbb_root_path,
 		$php_ext
@@ -57,6 +61,7 @@ class functions
 		$this->template			= $template;
 		$this->request			= $request;
 		$this->config			= $config;
+		$this->auth				= $auth;
 		$this->sfsapi			= $sfsapi;
 		$this->phpbb_root_path	= $phpbb_root_path;
 		$this->php_ext			= $php_ext;
@@ -108,19 +113,30 @@ class functions
 	* Report a confirmed spammer to StopForumSpam, using the API key already
 	* configured for rmcgirr83/stopforumspam.
 	*
+	* sfsapi() returns true on a genuine success, false when SFS/cURL is
+	* unavailable, or a JSON-encoded error string on a cURL failure - only
+	* the strict true case counts as reported.
+	*
 	* @return bool
 	*/
 	public function report_to_sfs($username, $ip, $email)
 	{
 		$api_key = isset($this->config['sfs_api_key']) ? $this->config['sfs_api_key'] : '';
 
-		return (bool) $this->sfsapi->sfsapi('add', $username, $ip, $email, $this->user->lang['SPAM'], $api_key);
+		return $this->sfsapi->sfsapi('add', $username, $ip, $email, $this->user->lang['SFSC_SPAM_REASON'], $api_key) === true;
 	}
 
 	/**
 	* Ban a confirmed spammer by IP, username, and email, back up their row,
 	* then delete the account. Backup/ban/delete are plain phpBB core
 	* operations - only the "report to SFS" step depends on this extension.
+	*
+	* Deletion is skipped if the pre-deletion backup couldn't be written -
+	* an unwritable store/ directory should never lead to an unrecoverable
+	* account removal.
+	*
+	* @return bool True if the account was banned and deleted, false if the
+	*              backup failed and the account was left untouched.
 	*/
 	public function ban_and_delete($user_id, $username, $ip, $email)
 	{
@@ -129,23 +145,31 @@ class functions
 			include_once($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
 		}
 
-		$this->backup($user_id);
+		if (!$this->backup($user_id))
+		{
+			return false;
+		}
 
-		user_ban('email', $email, 0, 0, 0, $this->user->lang['SPAM'], $this->user->lang['SPAM']);
-		user_ban('user', $username, 0, 0, 0, $this->user->lang['SPAM'], $this->user->lang['SPAM']);
+		user_ban('email', $email, 0, 0, 0, $this->user->lang['SFSC_SPAM_REASON'], $this->user->lang['SFSC_SPAM_REASON']);
+		user_ban('user', $username, 0, 0, 0, $this->user->lang['SFSC_SPAM_REASON'], $this->user->lang['SFSC_SPAM_REASON']);
 
 		if ($ip)
 		{
-			user_ban('ip', $ip, 0, 0, 0, $this->user->lang['SPAM'], $this->user->lang['SPAM']);
+			user_ban('ip', $ip, 0, 0, 0, $this->user->lang['SFSC_SPAM_REASON'], $this->user->lang['SFSC_SPAM_REASON']);
 		}
 
 		user_delete('remove', $user_id);
 		add_log('admin', 'LOG_USER_DELETED', $username);
+
+		return true;
 	}
 
 	/**
 	* Export a user's row to store/ before deletion, in the SQL dialect for
 	* whichever DB engine this board actually runs.
+	*
+	* @return bool True once the backup file has been written, false if the
+	*              user row was missing or the file couldn't be written.
 	*/
 	public function backup($user_id)
 	{
@@ -158,7 +182,7 @@ class functions
 
 		if (!$row)
 		{
-			return;
+			return false;
 		}
 
 		$sql_layer = $this->db->get_sql_layer();
@@ -168,16 +192,16 @@ class functions
 
 		$insert_sql = 'INSERT INTO ' . USERS_TABLE . ' (' . implode(', ', $columns) . ") VALUES ('" . implode("', '", $values) . "');" . "\n";
 
-		$backup_dir = $this->phpbb_root_path . 'store/sfs_companion/';
+		$backup_dir = $this->phpbb_root_path . 'store/sfscompanion/';
 
-		if (!is_dir($backup_dir))
+		if (!is_dir($backup_dir) && !@mkdir($backup_dir, 0755, true) && !is_dir($backup_dir))
 		{
-			@mkdir($backup_dir, 0755, true);
+			return false;
 		}
 
 		$filename = $backup_dir . 'user_' . (int) $user_id . '_' . time() . '.sql';
 
-		@file_put_contents($filename, "-- Backup of user_id " . (int) $user_id . " (" . $sql_layer . ") before deletion by SFS Companion\n" . $insert_sql);
+		return (bool) @file_put_contents($filename, "-- Backup of user_id " . (int) $user_id . " (" . $sql_layer . ") before deletion by SFS Companion\n" . $insert_sql);
 	}
 
 	/**
@@ -203,26 +227,45 @@ class functions
 			trigger_error('NO_USER');
 		}
 
-		if ($ban_and_delete && check_form_key('sfs_companion_full_check'))
+		if ($ban_and_delete)
 		{
+			// Banning and deleting the account is a step up from "can check
+			// users" - require real user-management rights, not just the
+			// ability to run a lookup. confirm_box() below provides this
+			// branch's own CSRF protection, matching the pattern phpBB core
+			// uses for confirm-then-delete actions (e.g. acp_reasons.php) -
+			// check_form_key() is not re-validated here because its token
+			// isn't carried through the confirm_box() round trip.
+			if (!($this->auth->acl_get('a_') || $this->auth->acl_get('a_user')))
+			{
+				trigger_error('NOT_AUTHORISED');
+			}
+
 			if (confirm_box(true))
 			{
 				$reported = $this->report_to_sfs($row['username'], $row['user_ip'], $row['user_email']);
+				$deleted = $this->ban_and_delete($row['user_id'], $row['username'], $row['user_ip'], $row['user_email']);
 
-				$this->ban_and_delete($row['user_id'], $row['username'], $row['user_ip'], $row['user_email']);
+				if (!$deleted)
+				{
+					$l_done = '<strong><span style="color: #a00;">' . $this->user->lang['FAIL_BACKUP'] . '</span></strong>';
+				}
+				else if (!$reported)
+				{
+					$l_done = '<strong>' . $this->user->lang['SUCSESS_DELETE'] . '<br /><span style="color: #a00;">' . $this->user->lang['FAIL_ADD_DATA'] . '</span></strong>';
+				}
+				else
+				{
+					$l_done = '<strong>' . $this->user->lang['SUCSESS_DELETE'] . '</strong>';
+				}
 
 				$this->template->assign_vars(array(
-					'L_DONE'	=> ($reported)
-						? '<strong>' . $this->user->lang['SUCSESS_DELETE'] . '</strong>'
-						: '<strong>' . $this->user->lang['SUCSESS_DELETE'] . '<br /><span style="color: #a00;">' . $this->user->lang['FAIL_ADD_DATA'] . '</span></strong>',
+					'L_DONE'	=> $l_done,
 				));
 
 				$this->template->set_filenames(array('body' => 'is_spamer_full.html'));
 				$this->template->assign_var('DONE', true);
-				$this->template->display('body');
-
-				garbage_collection();
-				exit_handler();
+				$this->finish_page();
 			}
 			else
 			{
@@ -233,7 +276,7 @@ class functions
 			}
 		}
 
-		if ($report_to_sfs && check_form_key('sfs_companion_full_check'))
+		if ($report_to_sfs && check_form_key('sfscompanion_full_check'))
 		{
 			$reported = $this->report_to_sfs($row['username'], $row['user_ip'], $row['user_email']);
 
@@ -245,10 +288,7 @@ class functions
 			{
 				$this->template->set_filenames(array('body' => 'is_spamer_full.html'));
 				$this->template->assign_var('DONE', true);
-				$this->template->display('body');
-
-				garbage_collection();
-				exit_handler();
+				$this->finish_page();
 			}
 		}
 
@@ -300,16 +340,16 @@ class functions
 			$report_img = ' em_spam';
 		}
 
-		add_form_key('sfs_companion_full_check');
+		add_form_key('sfscompanion_full_check');
 
 		$this->template->assign_vars(array(
 			'IP_FIND'		=> ($banned_ip) ? sprintf($this->user->lang['IP_FIND'], $freq['ip']) : $this->user->lang['IP_NOT_FIND'],
 			'FIND_MAIL'		=> ($em) ? sprintf($this->user->lang['EMAIL_FIND'], $freq['email']) : $this->user->lang['EMAIL_NOT_FIND'],
 			'FIND_NICK'		=> ($nick) ? sprintf($this->user->lang['NICK_FIND'], $freq['username']) : $this->user->lang['NICK_NOT_FIND'],
 
-			'USER'			=> $row['username'],
-			'IP'			=> $row['user_ip'],
-			'EMAIL'			=> $row['user_email'],
+			'USER'			=> htmlspecialchars($row['username']),
+			'IP'			=> htmlspecialchars($row['user_ip']),
+			'EMAIL'			=> htmlspecialchars($row['user_email']),
 
 			'REPORT'		=> $report,
 			'CLASS'			=> $report_img,
@@ -319,10 +359,33 @@ class functions
 		));
 
 		$this->template->set_filenames(array('body' => 'is_spamer_full.html'));
-		$this->template->display('body');
+		$this->finish_page();
+	}
 
-		garbage_collection();
-		exit_handler();
+	/**
+	* Closes out the report page rendered by full_check().
+	*
+	* In the ACP (bulk scanner drill-down), is_spamer_full.html is a
+	* self-contained page - it includes its own overall_header.html/
+	* overall_footer.html, the same way confirm_box() renders its own
+	* full page when called from admin context - so we display it and
+	* exit directly. On the front end (memberlist/ACP-user-overview
+	* finder), the caller has already run page_header(), so page_footer()
+	* both displays the body and closes the page.
+	*/
+	private function finish_page()
+	{
+		if (defined('IN_ADMIN'))
+		{
+			$this->template->display('body');
+
+			garbage_collection();
+			exit_handler();
+		}
+		else
+		{
+			page_footer();
+		}
 	}
 
 	/**

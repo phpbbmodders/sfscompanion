@@ -1,3 +1,3 @@
-phpbbmodders_sfs_companion_finder:
+phpbbmodders_sfscompanion_finder:
     path: /sfs-companion/finder
-    defaults: { _controller: phpbbmodders.sfs_companion.controller.finder:main }
+    defaults: { _controller: phpbbmodders.sfscompanion.controller.finder:main }
