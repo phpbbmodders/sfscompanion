@@ -12,16 +12,16 @@ Companion tools for [rmcgirr83/stopforumspam](https://github.com/rmcgirr83/stopf
 
 ## Installation
 
-1. Copy the extension to: `/ext/phpbbmodders/sfs_companion`
+1. Copy the extension to: `/ext/phpbbmodders/sfscompanion`
 2. In the Administration Control Panel, navigate to: **Customise → Manage extensions**
 3. Enable the **SFS Companion** extension (requires `rmcgirr83/stopforumspam` to already be enabled)
 4. Configure the prune interval under **SFS Companion → Settings**
 
-## Automated testing
+## Continuous integration
 
-We use automated unit tests to prevent regressions. Check out our build below:
+CI runs phpBB's standard extension checks (coding style, image/executable checks, extension parity validation) on every push. It does not run PHPUnit tests - this extension hard-depends on `rmcgirr83/stopforumspam` being installed and enabled, which the generic test-framework doesn't set up, so the enable-extension step is expected to fail until that's addressed.
 
-[![Tests](https://github.com/phpbbmodders/sfs_companion/actions/workflows/tests.yml/badge.svg)](https://github.com/phpbbmodders/sfs_companion/actions/workflows/tests.yml)
+[![Tests](https://github.com/phpbbmodders/sfscompanion/actions/workflows/tests.yml/badge.svg)](https://github.com/phpbbmodders/sfscompanion/actions/workflows/tests.yml)
 
 ## Acknowledgments
 

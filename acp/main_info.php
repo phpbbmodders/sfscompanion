@@ -7,35 +7,35 @@
 *
 */
 
-namespace phpbbmodders\sfs_companion\acp;
+namespace phpbbmodders\sfscompanion\acp;
 
 class main_info
 {
 	function module()
 	{
 		return array(
-			'filename'	=> '\phpbbmodders\sfs_companion\acp\main_module',
+			'filename'	=> '\phpbbmodders\sfscompanion\acp\main_module',
 			'title'		=> 'ACP_SFS_COMPANION',
 			'version'	=> '1.0.0',
 			'modes'		=> array(
 				'settings'	=> array(
 					'title'	=> 'ACP_SFS_SETTINGS',
-					'auth'	=> 'ext_phpbbmodders/sfs_companion && acl_a_board',
+					'auth'	=> 'ext_phpbbmodders/sfscompanion && acl_a_board',
 					'cat'	=> array('ACP_SFS_COMPANION'),
 				),
 				'blocks'	=> array(
 					'title'	=> 'ACP_SFS_BLOCKS',
-					'auth'	=> 'ext_phpbbmodders/sfs_companion && acl_a_board',
+					'auth'	=> 'ext_phpbbmodders/sfscompanion && acl_a_board',
 					'cat'	=> array('ACP_SFS_COMPANION'),
 				),
 				'errors'	=> array(
 					'title'	=> 'ACP_SFS_ERRORS',
-					'auth'	=> 'ext_phpbbmodders/sfs_companion && acl_a_board',
+					'auth'	=> 'ext_phpbbmodders/sfscompanion && acl_a_board',
 					'cat'	=> array('ACP_SFS_COMPANION'),
 				),
 				'scan'		=> array(
 					'title'	=> 'ACP_SFS_SCAN',
-					'auth'	=> 'ext_phpbbmodders/sfs_companion && acl_a_board && acl_a_user',
+					'auth'	=> 'ext_phpbbmodders/sfscompanion && acl_a_board && acl_a_user',
 					'cat'	=> array('ACP_SFS_COMPANION'),
 				),
 			),

@@ -7,7 +7,7 @@
 *
 */
 
-namespace phpbbmodders\sfs_companion\cron\task;
+namespace phpbbmodders\sfscompanion\cron\task;
 
 class prune_logs extends \phpbb\cron\task\base
 {
@@ -47,7 +47,7 @@ class prune_logs extends \phpbb\cron\task\base
 		}
 
 		$diff = time() - ((int) $this->config['sfsc_expire_days'] * 86400);
-		$ops = array('LOG_SFS_MESSAGE', 'LOG_SFS_DOWN', 'LOG_SFS_DOWN_USER_ALLOWED');
+		$ops = array('LOG_SFS_MESSAGE', 'LOG_SFS_DOWN', 'LOG_SFS_DOWN_USER_ALLOWED', 'LOG_SFS_CURL_ERROR', 'LOG_SFS_NEED_CURL');
 
 		$sql = 'DELETE FROM ' . LOG_TABLE . '
 			WHERE log_time < ' . (int) $diff . '

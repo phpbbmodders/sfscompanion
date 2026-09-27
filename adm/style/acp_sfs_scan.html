@@ -1,5 +1,12 @@
 <!-- INCLUDE overall_header.html -->
 
+<style>
+	table.sfs-scan-results tr.spam { background-color: #ffdddd; }
+	table.sfs-scan-results tr.em_spam { background-color: #fff3cd; }
+	table.sfs-scan-results tr.ip { background-color: #fff3cd; }
+	table.sfs-scan-results td.sfs-fail-chk { color: #a00; }
+</style>
+
 <h1>{PAGE_TITLE}</h1>
 
 <p>{L_ACP_SFS_SCAN_EXPLAIN}</p>
@@ -17,7 +24,7 @@
 
 	<p>{TOTAL_USERS} &middot; {EXEC_TIME}</p>
 
-	<table class="table1">
+	<table class="table1 sfs-scan-results">
 		<thead>
 			<tr>
 				<th>&nbsp;</th>
@@ -27,6 +34,7 @@
 				<th>{L_SORT_POST}</th>
 				<th>{L_SORT_JOINED}</th>
 				<th>{L_LAST_VISIT}</th>
+				<th>{L_STATUS}</th>
 				<th>&nbsp;</th>
 			</tr>
 		</thead>
@@ -40,11 +48,12 @@
 				<td><a href="{row.U_POSTS}">{row.USER_POSTS}</a></td>
 				<td>{row.USER_REG_DATE}</td>
 				<td>{row.LAST_VISIT}</td>
+				<td class="sfs-fail-chk"><!-- IF row.S_FAIL_CHK -->{L_SFS_CHECK_FAILED}<!-- ENDIF --></td>
 				<td><a href="{row.U_FULL_CHECK}">{L_FULL_CHECK}</a></td>
 			</tr>
 			<!-- BEGINELSE -->
 			<tr>
-				<td colspan="8" style="text-align: center;">{L_NOT_FIND}</td>
+				<td colspan="9" style="text-align: center;">{L_NOT_FIND}</td>
 			</tr>
 			<!-- END row -->
 		</tbody>
@@ -56,7 +65,7 @@
 
 	<!-- IF .pagination -->
 	<div class="pagination">
-		{PAGINATION}
+		<!-- INCLUDE pagination.html -->
 	</div>
 	<!-- ENDIF -->
 

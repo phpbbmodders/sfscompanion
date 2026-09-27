@@ -7,7 +7,7 @@
 *
 */
 
-namespace phpbbmodders\sfs_companion;
+namespace phpbbmodders\sfscompanion;
 
 class ext extends \phpbb\extension\base
 {
