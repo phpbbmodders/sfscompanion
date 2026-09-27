@@ -5,18 +5,26 @@
     "homepage": "https://www.phpbbmodders.com/",
     "version": "1.0.1",
     "time": "2026-09-01",
-    "license": "GPL-2.0",
+    "keywords": [
+        "phpbb",
+        "extension",
+        "stopforumspam",
+        "anti-spam",
+        "spam",
+        "moderation"
+    ],
+    "license": "GPL-2.0-only",
     "authors": [
-        {
-            "name": "Sheer",
-            "homepage": "https://www.phpbbguru.net/community/",
-            "role": "Past Developer"
-        },
         {
             "name": "phpBB Modders",
             "email": "board@phpbbmodders.com",
             "homepage": "https://www.phpbbmodders.com/",
-            "role": "Maintainer"
+            "role": "Extension Developer"
+        },
+        {
+            "name": "Sheer",
+            "homepage": "https://www.phpbbguru.net/community/",
+            "role": "Past Developer"
         }
     ],
     "require": {
