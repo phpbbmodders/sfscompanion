@@ -43,6 +43,6 @@ services:
             - '@user'
             - '@log'
         calls:
-            - [set_name, [cron.task.prune_logs]]
+            - [set_name, [cron.task.phpbbmodders.sfscompanion.prune_logs]]
         tags:
             - { name: cron.task }
