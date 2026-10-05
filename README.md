@@ -12,7 +12,7 @@ Companion tools for the Stop Forum Spam extension: browse what it blocked, and l
 
 ## Requirements
 
-- phpBB 3.3.0 or later
+- phpBB 3.3.19 or later
 - PHP 8.0 or later
 - [rmcgirr83/stopforumspam](https://github.com/rmcgirr83/stopforumspam) installed and enabled. This extension won't enable without it.
 

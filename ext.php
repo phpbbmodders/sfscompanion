@@ -14,6 +14,8 @@ namespace phpbbmodders\sfscompanion;
 class ext extends \phpbb\extension\base
 {
 	/**
+	* Refuse to enable below the minimum phpBB and PHP versions.
+	*
 	* This extension only makes sense installed alongside rmcgirr83/stopforumspam
 	* (every StopForumSpam API call it makes goes through that extension's own
 	* sfsapi service) - most boards install extensions by copying files rather
@@ -21,8 +23,36 @@ class ext extends \phpbb\extension\base
 	*/
 	public function is_enableable()
 	{
+		if (!$this->check_phpbb_version() || !$this->check_php_version())
+		{
+			$language = $this->container->get('language');
+			$language->add_lang('install_sfscompanion', 'phpbbmodders/sfscompanion');
+
+			return $language->lang('SFSCOMPANION_NOT_ENABLEABLE');
+		}
+
 		global $phpbb_extension_manager;
 
 		return $phpbb_extension_manager->is_enabled('rmcgirr83/stopforumspam');
+	}
+
+	/**
+	 * Require phpBB 3.3.19
+	 *
+	 * @return bool
+	 */
+	public function check_phpbb_version()
+	{
+		return phpbb_version_compare(PHPBB_VERSION, '3.3.19', '>=');
+	}
+
+	/**
+	 * Require PHP 8.0
+	 *
+	 * @return bool
+	 */
+	public function check_php_version()
+	{
+		return PHP_VERSION_ID >= 80000;
 	}
 }
