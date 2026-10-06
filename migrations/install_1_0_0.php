@@ -22,7 +22,7 @@ class install_1_0_0 extends \phpbb\db\migration\migration
 	{
 		return array(
 			'\phpbb\db\migration\data\v330\v330',
-			'\rmcgirr83\stopforumspam\migrations\version_149',
+			'\phpbbmodders\stopforumspam\migrations\version_149',
 		);
 	}
 

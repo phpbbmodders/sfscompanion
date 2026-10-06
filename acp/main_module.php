@@ -110,7 +110,7 @@ class main_module
 		$isearch	= $request->variable('isearch', '');
 
 		// LOG_SFS_CURL_ERROR/LOG_SFS_NEED_CURL are logged by
-		// rmcgirr83/stopforumspam's own sfsapi service - the same service
+		// phpbbmodders/stopforumspam's own sfsapi service - the same service
 		// this extension's own lookups/reports go through - so they belong
 		// in "errors" alongside the registration/posting-time LOG_SFS_DOWN* entries.
 		$ops = ($view === 'blocks') ? array('LOG_SFS_MESSAGE') : array('LOG_SFS_DOWN', 'LOG_SFS_DOWN_USER_ALLOWED', 'LOG_SFS_CURL_ERROR', 'LOG_SFS_NEED_CURL');
@@ -206,7 +206,7 @@ class main_module
 	/**
 	* Bulk scanner: lists recently-registered users and checks each one
 	* against SFS inline. Same per-page check cost as the original
-	* (6 users/page), just delegated to rmcgirr83/stopforumspam's own
+	* (6 users/page), just delegated to phpbbmodders/stopforumspam's own
 	* sfsapi service instead of a direct API call.
 	*/
 	private function scan($sfs)

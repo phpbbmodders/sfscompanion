@@ -24,7 +24,7 @@ $lang = array_merge($lang, array(
 
 	'ACP_SFS_COMPANION'				=> 'SFS Companion',
 	'ACP_SFS_SETTINGS'					=> 'Settings',
-	'ACP_SFS_SETTINGS_EXPLAIN'			=> 'Companion tools for rmcgirr83/stopforumspam: a browsable log of what it has already blocked, and a manual lookup/removal tool for suspected spammers.',
+	'ACP_SFS_SETTINGS_EXPLAIN'			=> 'Companion tools for phpbbmodders/stopforumspam: a browsable log of what it has already blocked, and a manual lookup/removal tool for suspected spammers.',
 	'ACP_SFS_BLOCKS'					=> 'Spam blocks',
 	'ACP_SFS_ERRORS'					=> 'SFS errors',
 	'ACP_SFS_SCAN'						=> 'Scan users',
@@ -106,8 +106,8 @@ $lang = array_merge($lang, array(
 
 	'ADD_DATA'							=> 'Report to StopForumSpam',
 	'ADD_AND_DELETE'					=> 'Report to StopForumSpam and delete this user',
-	'FAIL_ADD_DATA'						=> 'Failed to report this user to StopForumSpam - check the API key configured for rmcgirr83/stopforumspam.',
-	'FAIL_ADD_DATA_COUNT'				=> '%d user(s) were deleted but could not be reported to StopForumSpam - check the API key configured for rmcgirr83/stopforumspam.',
+	'FAIL_ADD_DATA'						=> 'Failed to report this user to StopForumSpam - check the API key configured for phpbbmodders/stopforumspam.',
+	'FAIL_ADD_DATA_COUNT'				=> '%d user(s) were deleted but could not be reported to StopForumSpam - check the API key configured for phpbbmodders/stopforumspam.',
 	'FAIL_BACKUP'						=> 'Could not save a backup of this account before deletion - the account was NOT deleted. Check that store/sfscompanion/ is writable.',
 	'FAIL_BACKUP_COUNT'					=> '%d user(s) were left untouched because a backup could not be saved - check that store/sfscompanion/ is writable.',
 	'CONFIRM_DELETE'					=> 'Report this user to StopForumSpam and permanently delete their account? This cannot be undone.',

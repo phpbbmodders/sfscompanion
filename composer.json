@@ -30,7 +30,7 @@
     "require": {
         "php": ">=8.0.0",
         "composer/installers": "^1.0",
-        "rmcgirr83/stopforumspam": ">=1.5.0"
+        "phpbbmodders/stopforumspam": ">=1.5.2"
     },
     "extra": {
         "display-name": "SFS Companion",

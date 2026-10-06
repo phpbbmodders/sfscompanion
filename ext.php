@@ -16,7 +16,7 @@ class ext extends \phpbb\extension\base
 	/**
 	* Refuse to enable below the minimum phpBB and PHP versions.
 	*
-	* This extension only makes sense installed alongside rmcgirr83/stopforumspam
+	* This extension only makes sense installed alongside phpbbmodders/stopforumspam
 	* (every StopForumSpam API call it makes goes through that extension's own
 	* sfsapi service) - most boards install extensions by copying files rather
 	* than via Composer, so composer.json's "require" alone won't be enforced.
@@ -33,7 +33,7 @@ class ext extends \phpbb\extension\base
 
 		global $phpbb_extension_manager;
 
-		return $phpbb_extension_manager->is_enabled('rmcgirr83/stopforumspam');
+		return $phpbb_extension_manager->is_enabled('phpbbmodders/stopforumspam');
 	}
 
 	/**
