@@ -6,7 +6,7 @@ name: Tests
 # See the README for full details and configuration instructions:
 #  - https://github.com/phpbb-extensions/test-framework
 #
-# NOTE: this extension hard-depends on rmcgirr83/stopforumspam being
+# NOTE: this extension hard-depends on phpbbmodders/stopforumspam being
 # installed and enabled (see ext.php). The generic test-framework run
 # below does not install that dependency, so the enable-extension step
 # is expected to fail until that's addressed.

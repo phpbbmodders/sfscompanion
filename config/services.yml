@@ -8,7 +8,7 @@ services:
             - '@request'
             - '@config'
             - '@auth'
-            - '@rmcgirr83.stopforumspam.core.sfsapi'
+            - '@phpbbmodders.stopforumspam.core.sfsapi'
             - '%core.root_path%'
             - '%core.php_ext%'
 

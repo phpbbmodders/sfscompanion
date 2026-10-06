@@ -11,12 +11,12 @@
 
 namespace phpbbmodders\sfscompanion\core;
 
-use rmcgirr83\stopforumspam\core\sfsapi;
+use phpbbmodders\stopforumspam\core\sfsapi;
 
 /**
 * Shared helpers for looking up, reporting, and removing suspected spammers.
 *
-* Every call to StopForumSpam goes through rmcgirr83/stopforumspam's own
+* Every call to StopForumSpam goes through phpbbmodders/stopforumspam's own
 * sfsapi service - this extension never talks to the StopForumSpam API
 * directly, and reuses that extension's own sfs_api_key config setting.
 */
@@ -113,7 +113,7 @@ class functions
 
 	/**
 	* Report a confirmed spammer to StopForumSpam, using the API key already
-	* configured for rmcgirr83/stopforumspam.
+	* configured for phpbbmodders/stopforumspam.
 	*
 	* sfsapi() returns true on a genuine success, false when SFS/cURL is
 	* unavailable, or a JSON-encoded error string on a cURL failure - only
