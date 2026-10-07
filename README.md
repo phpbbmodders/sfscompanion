@@ -17,13 +17,13 @@ Companion tools for the Stop Forum Spam extension: browse what it blocked, look 
 
 <table>
   <tr>
+    <td align="center"><a href="docs/images/sfscompanion-acp-honeypot-trips.png"><img src="docs/images/sfscompanion-acp-honeypot-trips.png" width="280" alt="The Honeypot trips log in the ACP"></a><br>Honeypot trips log</td>
     <td align="center"><a href="docs/images/sfscompanion-acp-blocks.png"><img src="docs/images/sfscompanion-acp-blocks.png" width="280" alt="The Spam blocks log in the ACP"></a><br>Spam blocks log</td>
-    <td align="center"><a href="docs/images/sfscompanion-acp-errors.png"><img src="docs/images/sfscompanion-acp-errors.png" width="280" alt="The SFS errors log in the ACP"></a><br>SFS errors log</td>
     <td align="center"><a href="docs/images/sfscompanion-profile-link.png"><img src="docs/images/sfscompanion-profile-link.png" width="280" alt="The Check via StopForumSpam link on a member's profile, highlighted"></a><br>Profile lookup link (highlighted)</td>
   </tr>
 </table>
 
-Click a screenshot for the full size. All screenshots, including the settings page, are on the [Screenshots wiki page](https://github.com/phpbbmodders/sfscompanion/wiki/Screenshots).
+Click a screenshot for the full size. All screenshots, including the honeypot settings and the SFS errors log, are on the [Screenshots wiki page](https://github.com/phpbbmodders/sfscompanion/wiki/Screenshots).
 
 ## Requirements
 
