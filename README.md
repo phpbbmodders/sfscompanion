@@ -20,7 +20,7 @@ Companion tools for the Stop Forum Spam extension: browse what it blocked, and l
   </tr>
 </table>
 
-Click a screenshot for the full size. The settings page is in [`docs/images`](docs/images) too.
+Click a screenshot for the full size. All screenshots, including the settings page, are on the [Screenshots wiki page](https://github.com/phpbbmodders/sfscompanion/wiki/Screenshots).
 
 ## Requirements
 
