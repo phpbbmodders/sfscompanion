@@ -1,0 +1,15 @@
+Subject: Possible false positive: {RESTRICTED_USERNAME} restricted by honeypot check
+
+Hello {USERNAME},
+
+The member "{RESTRICTED_USERNAME}" ({USER_POSTS} posts) tripped the honeypot
+check and was silently moved into the restricted group - they weren't
+told, and their submission still appeared to go through as normal.
+
+Given their post history, this is worth a human look: it may be a
+compromised or scripted account, or it may be a false positive.
+
+You can review their account here:
+{U_USER_DETAILS}
+
+{EMAIL_SIG}

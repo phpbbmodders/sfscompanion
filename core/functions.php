@@ -22,6 +22,9 @@ use phpbbmodders\stopforumspam\core\sfsapi;
 */
 class functions
 {
+	/** Users table columns never written to a pre-deletion backup */
+	const BACKUP_EXCLUDED_COLUMNS = array('user_password', 'user_passchg', 'user_form_salt', 'user_actkey', 'user_actkey_expiration', 'user_newpasswd');
+
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
@@ -119,13 +122,18 @@ class functions
 	* unavailable, or a JSON-encoded error string on a cURL failure - only
 	* the strict true case counts as reported.
 	*
+	* @param string		$username
+	* @param string		$ip
+	* @param string		$email
+	* @param string|null	$evidence	Text sent as evidence; defaults to SFSC_SPAM_REASON
 	* @return bool
 	*/
-	public function report_to_sfs($username, $ip, $email)
+	public function report_to_sfs($username, $ip, $email, $evidence = null)
 	{
 		$api_key = isset($this->config['sfs_api_key']) ? $this->config['sfs_api_key'] : '';
+		$evidence = ($evidence !== null && $evidence !== '') ? $evidence : $this->user->lang['SFSC_SPAM_REASON'];
 
-		return $this->sfsapi->sfsapi('add', $username, $ip, $email, $this->user->lang['SFSC_SPAM_REASON'], $api_key) === true;
+		return $this->sfsapi->sfsapi('add', $username, $ip, $email, $evidence, $api_key) === true;
 	}
 
 	/**
@@ -187,6 +195,13 @@ class functions
 			return false;
 		}
 
+		// Leave secrets out: store/ is only protected by an Apache .htaccess
+		// file, and a restored account can simply reset its password
+		foreach (self::BACKUP_EXCLUDED_COLUMNS as $column)
+		{
+			unset($row[$column]);
+		}
+
 		$sql_layer = $this->db->get_sql_layer();
 
 		$columns = array_keys($row);
@@ -240,7 +255,7 @@ class functions
 			// isn't carried through the confirm_box() round trip.
 			if (!($this->auth->acl_get('a_') || $this->auth->acl_get('a_user')))
 			{
-				trigger_error('NOT_AUTHORISED');
+				trigger_error('NOT_AUTHORISED', E_USER_WARNING);
 			}
 
 			if (confirm_box(true))
@@ -248,38 +263,39 @@ class functions
 				$reported = $this->report_to_sfs($row['username'], $row['user_ip'], $row['user_email']);
 				$deleted = $this->ban_and_delete($row['user_id'], $row['username'], $row['user_ip'], $row['user_email']);
 
-				if (!$deleted)
-				{
-					$l_done = '<strong><span style="color: #a00;">' . $this->user->lang['FAIL_BACKUP'] . '</span></strong>';
-				}
-				else if (!$reported)
-				{
-					$l_done = '<strong>' . $this->user->lang['SUCSESS_DELETE'] . '<br /><span style="color: #a00;">' . $this->user->lang['FAIL_ADD_DATA'] . '</span></strong>';
-				}
-				else
-				{
-					$l_done = '<strong>' . $this->user->lang['SUCSESS_DELETE'] . '</strong>';
-				}
-
 				$this->template->assign_vars(array(
-					'L_DONE'	=> $l_done,
+					'DONE'				=> true,
+					'S_BACKUP_FAILED'	=> !$deleted,
+					'S_DELETED'			=> $deleted,
+					'S_REPORT_FAILED'	=> !$reported,
 				));
 
 				$this->template->set_filenames(array('body' => 'is_spamer_full.html'));
-				$this->template->assign_var('DONE', true);
 				$this->finish_page();
 			}
 			else
 			{
-				confirm_box(false, $this->user->lang['CONFIRM_DELETE'], build_hidden_fields(array(
+				confirm_box(false, $this->user->lang['SFSC_CONFIRM_DELETE'], build_hidden_fields(array(
 					'ch_user'				=> $user_id,
 					'report_and_delete'	=> true,
 				)));
 			}
 		}
 
-		if ($report_to_sfs && check_form_key('sfscompanion_full_check'))
+		if ($report_to_sfs)
 		{
+			// Sending a member's details to a public database is more than
+			// checking them: it needs the same rights as banning and deleting
+			if (!($this->auth->acl_get('a_') || $this->auth->acl_get('a_user')))
+			{
+				trigger_error('NOT_AUTHORISED', E_USER_WARNING);
+			}
+
+			if (!check_form_key('sfscompanion_full_check'))
+			{
+				trigger_error('FORM_INVALID', E_USER_WARNING);
+			}
+
 			$reported = $this->report_to_sfs($row['username'], $row['user_ip'], $row['user_email']);
 
 			$this->template->assign_vars(array(
@@ -288,8 +304,11 @@ class functions
 
 			if ($reported)
 			{
+				$this->template->assign_vars(array(
+					'DONE'			=> true,
+					'S_REPORTED'	=> true,
+				));
 				$this->template->set_filenames(array('body' => 'is_spamer_full.html'));
-				$this->template->assign_var('DONE', true);
 				$this->finish_page();
 			}
 		}
@@ -298,7 +317,7 @@ class functions
 
 		if ($check === false)
 		{
-			trigger_error('CONNECTION_ERROR');
+			trigger_error('SFSC_CONNECTION_ERROR');
 		}
 
 		list($insp_data, $freq) = $check + array(array(), array());
@@ -328,26 +347,26 @@ class functions
 
 		if (!$nick && !$em && !$banned_ip)
 		{
-			$report = $this->user->lang['NOT_SPAMMER'];
+			$report = $this->user->lang['SFSC_NOT_SPAMMER'];
 			$report_img = ' find';
 		}
 		else if ($nick && $banned_ip && $em)
 		{
-			$report = $this->user->lang['SPAMMER'];
+			$report = $this->user->lang['SFSC_SPAMMER'];
 			$report_img = ' spam';
 		}
 		else
 		{
-			$report = $this->user->lang['POSSIBLE_YES'];
+			$report = $this->user->lang['SFSC_POSSIBLE_YES'];
 			$report_img = ' em_spam';
 		}
 
 		add_form_key('sfscompanion_full_check');
 
 		$this->template->assign_vars(array(
-			'IP_FIND'		=> ($banned_ip) ? sprintf($this->user->lang['IP_FIND'], $freq['ip']) : $this->user->lang['IP_NOT_FIND'],
-			'FIND_MAIL'		=> ($em) ? sprintf($this->user->lang['EMAIL_FIND'], $freq['email']) : $this->user->lang['EMAIL_NOT_FIND'],
-			'FIND_NICK'		=> ($nick) ? sprintf($this->user->lang['NICK_FIND'], $freq['username']) : $this->user->lang['NICK_NOT_FIND'],
+			'IP_FIND'		=> ($banned_ip) ? sprintf($this->user->lang['SFSC_IP_FIND'], $freq['ip']) : $this->user->lang['SFSC_IP_NOT_FIND'],
+			'FIND_MAIL'		=> ($em) ? sprintf($this->user->lang['SFSC_EMAIL_FIND'], $freq['email']) : $this->user->lang['SFSC_EMAIL_NOT_FIND'],
+			'FIND_NICK'		=> ($nick) ? sprintf($this->user->lang['SFSC_NICK_FIND'], $freq['username']) : $this->user->lang['SFSC_NICK_NOT_FIND'],
 
 			'USER'			=> htmlspecialchars($row['username']),
 			'IP'			=> htmlspecialchars($row['user_ip']),
@@ -357,7 +376,8 @@ class functions
 			'CLASS'			=> $report_img,
 
 			'U_ACTION'		=> $u_action,
-			'PAGE_TITLE'	=> $this->user->lang['SFS_INFO'],
+			'PAGE_TITLE'	=> $this->user->lang['SFSC_INFO'],
+			'S_CAN_REPORT'	=> $this->auth->acl_get('a_') || $this->auth->acl_get('a_user'),
 		));
 
 		$this->template->set_filenames(array('body' => 'is_spamer_full.html'));
