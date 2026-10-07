@@ -1,11 +1,5 @@
+<!-- INCLUDECSS @phpbbmodders_sfscompanion/sfscompanion_acp.css -->
 <!-- INCLUDE overall_header.html -->
-
-<style>
-	table.sfs-scan-results tr.spam { background-color: #ffdddd; }
-	table.sfs-scan-results tr.em_spam { background-color: #fff3cd; }
-	table.sfs-scan-results tr.ip { background-color: #fff3cd; }
-	table.sfs-scan-results td.sfs-fail-chk { color: #a00; }
-</style>
 
 <h1>{PAGE_TITLE}</h1>
 
@@ -13,12 +7,12 @@
 
 <form id="sfs_scan" method="post" action="{U_ACTION}">
 	<fieldset class="display-options">
-		{L_REGISTERED}: <select name="f">{S_PERIOD_SELECT}</select>
-		{L_SEARCH_OPTION}: <select name="f_opt">{FILTER_OPTIONS}</select>
+		{L_SFSC_REGISTERED}: <select name="f"><!-- BEGIN periods --><option value="{periods.VALUE}"<!-- IF periods.S_SELECTED --> selected="selected"<!-- ENDIF -->>{periods.TEXT}</option><!-- END periods --></select>
+		{L_SFSC_SEARCH_OPTION}: <select name="f_opt"><!-- BEGIN filter_keys --><option value="{filter_keys.VALUE}"<!-- IF filter_keys.S_SELECTED --> selected="selected"<!-- ENDIF -->>{filter_keys.TEXT}</option><!-- END filter_keys --></select>
 		<input class="inputbox autowidth" type="text" name="filter" value="{FILTER}" />
-		{L_SELECT_SORT}: {S_MODE_SELECT} {S_ORDER_SELECT}
-		<label><input type="checkbox" name="no_posts" value="1"<!-- IF NOPOSTS --> checked="checked"<!-- ENDIF --> /> {L_NO_POSTS_ONLY}</label>
-		<label><input type="checkbox" name="s_inactive" value="1"<!-- IF UNACTIVE --> checked="checked"<!-- ENDIF --> /> {L_UNACTIVE}</label>
+		{L_SFSC_SELECT_SORT}: <select name="sk"><!-- BEGIN sort_keys --><option value="{sort_keys.VALUE}"<!-- IF sort_keys.S_SELECTED --> selected="selected"<!-- ENDIF -->>{sort_keys.TEXT}</option><!-- END sort_keys --></select> <select name="sd"><!-- BEGIN sort_dirs --><option value="{sort_dirs.VALUE}"<!-- IF sort_dirs.S_SELECTED --> selected="selected"<!-- ENDIF -->>{sort_dirs.TEXT}</option><!-- END sort_dirs --></select>
+		<label><input type="checkbox" name="no_posts" value="1"<!-- IF NOPOSTS --> checked="checked"<!-- ENDIF --> /> {L_SFSC_NO_POSTS_ONLY}</label>
+		<label><input type="checkbox" name="s_inactive" value="1"<!-- IF UNACTIVE --> checked="checked"<!-- ENDIF --> /> {L_SFSC_INACTIVE_ONLY}</label>
 		<input class="button2" type="submit" name="search" value="{L_GO}" />
 	</fieldset>
 
@@ -28,39 +22,39 @@
 		<thead>
 			<tr>
 				<th>&nbsp;</th>
-				<th>{L_USER_NAME}</th>
+				<th>{L_SFSC_USER_NAME}</th>
 				<th>{L_SORT_IP}</th>
-				<th>{L_USER_EMAIL}</th>
-				<th>{L_SORT_POST}</th>
+				<th>{L_SFSC_USER_EMAIL}</th>
+				<th>{L_SFSC_SORT_POST}</th>
 				<th>{L_SORT_JOINED}</th>
 				<th>{L_LAST_VISIT}</th>
-				<th>{L_STATUS}</th>
+				<th>{L_SFSC_STATUS}</th>
 				<th>&nbsp;</th>
 			</tr>
 		</thead>
 		<tbody>
 			<!-- BEGIN row -->
 			<tr class="{row.CLASS}">
-				<td style="text-align: center;"><input type="checkbox" name="id_list[]" value="{row.USER_ID}" /></td>
+				<td class="sfsc-center"><input type="checkbox" name="id_list[]" value="{row.USER_ID}" /></td>
 				<td>{row.USER_NAME}</td>
 				<td><!-- IF row.S_USER_IP --><a href="{row.S_USER_IP}">{row.USER_IP}</a><!-- ELSE -->{row.USER_IP}<!-- ENDIF --></td>
 				<td>{row.USER_EMAIL}</td>
 				<td><a href="{row.U_POSTS}">{row.USER_POSTS}</a></td>
 				<td>{row.USER_REG_DATE}</td>
 				<td>{row.LAST_VISIT}</td>
-				<td class="sfs-fail-chk"><!-- IF row.S_FAIL_CHK -->{L_SFS_CHECK_FAILED}<!-- ENDIF --></td>
-				<td><a href="{row.U_FULL_CHECK}">{L_FULL_CHECK}</a></td>
+				<td class="sfs-fail-chk"><!-- IF row.S_FAIL_CHK -->{L_SFSC_CHECK_FAILED}<!-- ENDIF --></td>
+				<td><a href="{row.U_FULL_CHECK}">{L_SFSC_FULL_CHECK}</a></td>
 			</tr>
 			<!-- BEGINELSE -->
 			<tr>
-				<td colspan="9" style="text-align: center;">{L_NOT_FIND}</td>
+				<td colspan="9" class="sfsc-center">{L_SFSC_NOT_FIND}</td>
 			</tr>
 			<!-- END row -->
 		</tbody>
 	</table>
 
 	<fieldset class="display-options">
-		<input class="button2" type="submit" name="delmarked" value="{L_DELETE_SELECTED}" />
+		<input class="button2" type="submit" name="delmarked" value="{L_SFSC_DELETE_SELECTED}" />
 	</fieldset>
 
 	<!-- IF .pagination -->

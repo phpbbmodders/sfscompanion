@@ -1,0 +1,73 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{L_ACP_SFSC_HONEYPOT_TRIPS}</h1>
+
+<p>{L_ACP_SFSC_HONEYPOT_TRIPS_EXPLAIN}</p>
+
+<!-- IF S_NO_API_KEY -->
+<div class="errorbox">
+	<p>{L_SFSC_HP_NO_API_KEY}</p>
+</div>
+<!-- ENDIF -->
+
+<form id="sfs_honeypot_trips" method="post" action="{U_ACTION}">
+	<fieldset class="display-options">
+		{L_SFSC_LIMIT_DAYS}{L_COLON} {S_LIMIT_DAYS}
+		{L_SORT_BY}{L_COLON} {S_SORT_KEY} {S_SORT_DIR}
+		<label>{L_SFSC_SEARCH_IP}{L_COLON} <input class="inputbox autowidth" type="text" name="isearch" value="{ISEARCH}" /></label>
+		<input class="button2" type="submit" name="sort" value="{L_GO}" />
+	</fieldset>
+
+	<table class="table1 responsive">
+		<thead>
+			<tr>
+				<th>&nbsp;</th>
+				<th>{L_SFSC_DATE}</th>
+				<th>{L_SFSC_HP_TRIP}</th>
+				<th>{L_USERNAME}</th>
+				<th>{L_SFSC_HP_EMAIL}</th>
+				<th>{L_IP}</th>
+				<th>{L_SFSC_HP_MESSAGE}</th>
+				<th>{L_SFSC_HP_SFS}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- BEGIN trip -->
+			<tr>
+				<td class="row1"><input type="checkbox" name="mark[]" value="{trip.ID}" /></td>
+				<td class="row2">{trip.DATE}</td>
+				<td class="row1">{trip.FORM}<br /><span class="small">{trip.REASON} &bull; {L_SFSC_HP_SUBMITTED_IN}{L_COLON} {trip.SECONDS} {L_SFSC_HP_SECONDS}</span></td>
+				<td class="row1"><!-- IF trip.U_USER --><a href="{trip.U_USER}">{trip.USERNAME}</a><!-- ELSE -->{trip.USERNAME}<!-- ENDIF --><!-- IF trip.USER_AGENT --><br /><span class="small" title="{trip.USER_AGENT}">{L_SFSC_HP_USER_AGENT}</span><!-- ENDIF --></td>
+				<td class="row1">{trip.EMAIL}</td>
+				<td class="row1"><!-- IF trip.U_IP --><a href="{trip.U_IP}">{trip.IP}</a><!-- ELSE -->{trip.IP}<!-- ENDIF --><!-- IF trip.S_IP_BANNED --><br /><span class="small error">{L_SFSC_HP_IP_BANNED}</span><!-- ENDIF --></td>
+				<td class="row1"><!-- IF trip.SUBJECT or trip.EXCERPT --><details><summary><!-- IF trip.SUBJECT -->{trip.SUBJECT}<!-- ELSE -->{L_SFSC_HP_MESSAGE}<!-- ENDIF --></summary>{trip.EXCERPT}</details><!-- ENDIF --></td>
+				<td class="row2">
+					<!-- IF trip.S_REPORTED -->{L_SFSC_HP_REPORTED}
+					<!-- ELSEIF trip.S_CAN_REPORT --><a class="button2" href="{trip.U_REPORT}">{L_SFSC_HP_REPORT}</a>
+					<!-- ELSEIF trip.S_MISSING --><span class="small">{L_SFSC_HP_MISSING_DETAILS}</span>
+					<!-- ENDIF -->
+				</td>
+			</tr>
+			<!-- BEGINELSE -->
+			<tr>
+				<td class="row1" colspan="8">{L_NO_ENTRIES}</td>
+			</tr>
+			<!-- END trip -->
+		</tbody>
+	</table>
+
+	<fieldset class="display-options">
+		<input class="button2" type="submit" name="delmarked" value="{L_DELETE_MARKED}" />
+		<input class="button2" type="submit" name="delall" value="{L_DELETE_ALL}" />
+	</fieldset>
+
+	<!-- IF .pagination -->
+	<div class="pagination">
+		<!-- INCLUDE pagination.html -->
+	</div>
+	<!-- ENDIF -->
+
+	{S_FORM_TOKEN}
+</form>
+
+<!-- INCLUDE overall_footer.html -->

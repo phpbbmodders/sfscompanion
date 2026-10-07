@@ -13,7 +13,7 @@ namespace phpbbmodders\sfscompanion\acp;
 
 class main_info
 {
-	function module()
+	public function module()
 	{
 		return array(
 			'filename'	=> '\phpbbmodders\sfscompanion\acp\main_module',
@@ -38,6 +38,16 @@ class main_info
 				'scan'		=> array(
 					'title'	=> 'ACP_SFS_SCAN',
 					'auth'	=> 'ext_phpbbmodders/sfscompanion && acl_a_board && acl_a_user',
+					'cat'	=> array('ACP_SFS_COMPANION'),
+				),
+				'honeypot'	=> array(
+					'title'	=> 'ACP_SFSC_HONEYPOT',
+					'auth'	=> 'ext_phpbbmodders/sfscompanion && acl_a_board',
+					'cat'	=> array('ACP_SFS_COMPANION'),
+				),
+				'honeypot_trips'	=> array(
+					'title'	=> 'ACP_SFSC_HONEYPOT_TRIPS',
+					'auth'	=> 'ext_phpbbmodders/sfscompanion && acl_a_board',
 					'cat'	=> array('ACP_SFS_COMPANION'),
 				),
 			),

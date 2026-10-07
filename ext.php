@@ -13,6 +13,9 @@ namespace phpbbmodders\sfscompanion;
 
 class ext extends \phpbb\extension\base
 {
+	/** Staff notification sent when the honeypot restricts an established account */
+	const NOTIFICATION_TYPE = 'phpbbmodders.sfscompanion.notification.type.honeypot_restricted';
+
 	/**
 	* Refuse to enable below the minimum phpBB and PHP versions.
 	*
@@ -54,5 +57,45 @@ class ext extends \phpbb\extension\base
 	public function check_php_version()
 	{
 		return PHP_VERSION_ID >= 80000;
+	}
+
+	/**
+	* Required whenever an extension defines its own notification type -
+	* omitting this throws uncaught exceptions on enable/disable/purge.
+	*/
+	public function enable_step($old_state)
+	{
+		if ($old_state === false)
+		{
+			$this->container->get('notification_manager')->enable_notifications(self::NOTIFICATION_TYPE);
+
+			return 'notification';
+		}
+
+		return parent::enable_step($old_state);
+	}
+
+	public function disable_step($old_state)
+	{
+		if ($old_state === false)
+		{
+			$this->container->get('notification_manager')->disable_notifications(self::NOTIFICATION_TYPE);
+
+			return 'notification';
+		}
+
+		return parent::disable_step($old_state);
+	}
+
+	public function purge_step($old_state)
+	{
+		if ($old_state === false)
+		{
+			$this->container->get('notification_manager')->purge_notifications(self::NOTIFICATION_TYPE);
+
+			return 'notification';
+		}
+
+		return parent::purge_step($old_state);
 	}
 }

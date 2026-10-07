@@ -3,53 +3,62 @@
 <h1>{PAGE_TITLE}</h1>
 
 <!-- IF DONE -->
-<p><strong>{L_DONE}</strong></p>
+	<!-- IF S_BACKUP_FAILED -->
+	<p class="error">{L_SFSC_FAIL_BACKUP}</p>
+	<!-- ELSEIF S_DELETED -->
+	<p><strong>{L_SFSC_SUCCESS_DELETE}</strong></p>
+	<!-- IF S_REPORT_FAILED --><p class="error">{L_SFSC_FAIL_ADD_DATA}</p><!-- ENDIF -->
+	<!-- ELSEIF S_REPORTED -->
+	<p><strong>{L_SFSC_REPORTED_DONE}</strong></p>
+	<!-- ENDIF -->
 <!-- ELSE -->
 
 <!-- IF S_ERROR -->
-<p class="error">{L_FAIL_ADD_DATA}</p>
+<p class="error">{L_SFSC_FAIL_ADD_DATA}</p>
 <!-- ENDIF -->
 
 <table class="table1">
 	<tbody>
 		<tr>
-			<td class="row1"><strong>{L_USER_NAME}</strong></td>
+			<td class="row1"><strong>{L_SFSC_USER_NAME}</strong></td>
 			<td class="row2">{USER}</td>
 		</tr>
 		<tr>
-			<td class="row1"><strong>{L_SORT_IP}</strong></td>
+			<td class="row1"><strong>{L_IP}</strong></td>
 			<td class="row2">{IP}</td>
 		</tr>
 		<tr>
-			<td class="row1"><strong>{L_USER_EMAIL}</strong></td>
+			<td class="row1"><strong>{L_SFSC_USER_EMAIL}</strong></td>
 			<td class="row2">{EMAIL}</td>
 		</tr>
 		<tr>
-			<td class="row1"><strong>{L_RESUME}</strong></td>
+			<td class="row1"><strong>{L_SFSC_RESUME}</strong></td>
 			<td class="row2 {CLASS}"><strong>{REPORT}</strong></td>
 		</tr>
 		<tr>
-			<td class="row1">{L_SORT_IP}</td>
+			<td class="row1">{L_IP}</td>
 			<td class="row2">{IP_FIND}</td>
 		</tr>
 		<tr>
-			<td class="row1">{L_USER_EMAIL}</td>
+			<td class="row1">{L_SFSC_USER_EMAIL}</td>
 			<td class="row2">{FIND_MAIL}</td>
 		</tr>
 		<tr>
-			<td class="row1">{L_USER_NAME}</td>
+			<td class="row1">{L_SFSC_USER_NAME}</td>
 			<td class="row2">{FIND_NICK}</td>
 		</tr>
 	</tbody>
 </table>
 
-<p class="warning">{L_WARNING_MESSAGE}</p>
+<p class="warning">{L_SFSC_WARNING_MESSAGE}</p>
 
 <form id="sfs_full_check" method="post" action="{U_ACTION}">
 	{S_FORM_TOKEN}
 	<p class="submit-buttons">
-		<input class="button2" type="submit" name="report" value="{L_ADD_DATA}" />
-		<input class="button1" type="submit" name="report_and_delete" value="{L_ADD_AND_DELETE}" />
+		<!-- IF S_CAN_REPORT -->
+		<input class="button2" type="submit" name="report" value="{L_SFSC_ADD_DATA}" />
+		<input class="button1" type="submit" name="report_and_delete" value="{L_SFSC_ADD_AND_DELETE}" />
+		<!-- ENDIF -->
 	</p>
 </form>
 

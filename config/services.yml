@@ -1,3 +1,6 @@
+parameters:
+    phpbbmodders.sfscompanion.tables.honeypot_trips: '%core.table_prefix%sfsc_honeypot_trips'
+
 services:
     phpbbmodders.sfscompanion.core.functions:
         class: phpbbmodders\sfscompanion\core\functions
@@ -27,7 +30,6 @@ services:
         arguments:
             - '@controller.helper'
             - '@template'
-            - '@request'
             - '@auth'
             - '@dbal.conn'
             - '%core.root_path%'
@@ -44,5 +46,41 @@ services:
             - '@log'
         calls:
             - [set_name, [cron.task.phpbbmodders.sfscompanion.prune_logs]]
+        tags:
+            - { name: cron.task }
+
+    phpbbmodders.sfscompanion.honeypot_listener:
+        class: phpbbmodders\sfscompanion\event\honeypot_listener
+        arguments:
+            - '@config'
+            - '@request'
+            - '@user'
+            - '@language'
+            - '@dbal.conn'
+            - '@notification_manager'
+            - '@auth'
+            - '@template'
+            - '%phpbbmodders.sfscompanion.tables.honeypot_trips%'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+        tags:
+            - { name: event.listener }
+
+    phpbbmodders.sfscompanion.notification.type.honeypot_restricted:
+        class: phpbbmodders\sfscompanion\notification\type\honeypot_restricted
+        parent: notification.type.base
+        shared: false
+        tags: [{ name: notification.type }]
+        calls:
+            - ['set_user_loader', ['@user_loader']]
+
+    phpbbmodders.sfscompanion.cron.task.prune_honeypot_trips:
+        class: phpbbmodders\sfscompanion\cron\task\prune_honeypot_trips
+        arguments:
+            - '@config'
+            - '@dbal.conn'
+            - '%phpbbmodders.sfscompanion.tables.honeypot_trips%'
+        calls:
+            - [set_name, [cron.task.phpbbmodders.sfscompanion.prune_honeypot_trips]]
         tags:
             - { name: cron.task }

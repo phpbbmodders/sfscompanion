@@ -1,0 +1,46 @@
+PROJECT: phpBB (PHPBB)
+ISSUE TYPE: Improvement
+SUMMARY: New template event: login_body_buttons_before
+PRIORITY: Minor
+COMPONENT: Events
+AFFECTS VERSION: 3.3.x
+
+TYPE
+====
+Template event
+
+LOCATION
+========
+styles/prosilver/template/login_body.html, immediately before the
+closing submit <dl>, right after {S_FORM_TOKEN_LOGIN} (same relative
+position posting_editor_submit_buttons and ucp_register_buttons_before
+occupy in their own templates - directly before the submit control,
+after all other form fields):
+
+	{S_LOGIN_REDIRECT}
+	{S_FORM_TOKEN_LOGIN}
+	{% EVENT login_body_buttons_before %}
+	<dl>
+		<dt>&nbsp;</dt>
+		<dd>{S_HIDDEN_FIELDS}<input type="submit" name="login" tabindex="6" value="{L_LOGIN}" class="button1" /></dd>
+	</dl>
+
+PURPOSE
+=======
+login_body.html defines zero template events (confirmed against
+docs/events.md and the template file directly), unlike every other
+primary form (registration, posting, PM composing), which each have at
+least one event near their submit button. An extension that needs to
+add anything to the login form - a honeypot field, a CAPTCHA-adjacent
+control, a "remember this device" checkbox - currently has no choice
+but to override the whole template.
+
+USE CASE
+========
+phpbbmodders/sfscompanion's honeypot (rejects registration/posting/PM submissions
+containing a value in a hidden field real users never see) covers
+every other primary form through existing events, but cannot cover the
+login form at all without this. No new PHP-side event is needed
+alongside it - core.login_box_before already exists and is sufficient
+for server-side validation once a field can actually be rendered into
+the form.

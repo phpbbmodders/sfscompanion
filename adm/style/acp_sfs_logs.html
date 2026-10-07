@@ -1,12 +1,13 @@
+<!-- INCLUDECSS @phpbbmodders_sfscompanion/sfscompanion_acp.css -->
 <!-- INCLUDE overall_header.html -->
 
 <h1>{PAGE_TITLE}</h1>
 
 <form id="sfs_log" method="post" action="{U_ACTION}">
 	<fieldset class="display-options">
-		{L_LIMIT_DAYS}: {S_LIMIT_DAYS}
+		{L_SFSC_LIMIT_DAYS}: {S_LIMIT_DAYS}
 		{L_SORT_BY}: {S_SORT_KEY} {S_SORT_DIR}
-		<label>{L_SEARCH_IP}: <input class="inputbox autowidth" type="text" name="isearch" value="{ISEARCH}" /></label>
+		<label>{L_SFSC_SEARCH_IP}: <input class="inputbox autowidth" type="text" name="isearch" value="{ISEARCH}" /></label>
 		<input class="button2" type="submit" name="sort" value="{L_GO}" />
 	</fieldset>
 
@@ -16,14 +17,14 @@
 				<th>&nbsp;</th>
 				<th>{L_USERNAME}</th>
 				<th>{L_IP}</th>
-				<th>{L_DATE}</th>
+				<th>{L_SFSC_DATE}</th>
 				<th>{L_ACTION}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<!-- BEGIN log -->
 			<tr>
-				<td class="row1" style="text-align: center;"><input type="checkbox" name="mark[]" value="{log.ID}" /></td>
+				<td class="row1 sfsc-center"><input type="checkbox" name="mark[]" value="{log.ID}" /></td>
 				<td class="row1">{log.USERNAME}</td>
 				<td class="row1"><!-- IF log.U_IP --><a href="{log.U_IP}">{log.IP}</a><!-- ELSE -->{log.IP}<!-- ENDIF --></td>
 				<td class="row2">{log.DATE}</td>
@@ -31,7 +32,7 @@
 			</tr>
 			<!-- BEGINELSE -->
 			<tr>
-				<td class="row1" colspan="5" style="text-align: center;">{L_NO_ENTRIES}</td>
+				<td class="row1 sfsc-center" colspan="5">{L_NO_ENTRIES}</td>
 			</tr>
 			<!-- END log -->
 		</tbody>
