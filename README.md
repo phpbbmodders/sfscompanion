@@ -13,6 +13,18 @@ Companion tools for the Stop Forum Spam extension: browse what it blocked, look 
 - **Honeypot trips** — an ACP log of every trip with the username, email, IP, browser, which check tripped and how fast the form was sent, plus the subject and an excerpt for posts and PMs. A **Report** button sends a trip to Stop Forum Spam after you confirm it; trips are deleted automatically after 30 days by default.
 - **Automatic IP bans** — after a set number of trips (3 within 24 hours by default) from the same IP, or optionally the same IP and email, or the same IP, email or username, the IP is banned for 30 days (adjustable, or permanent). By default only hidden-field trips count. The bans carry the admin-side reason `SFS Companion honeypot auto-ban` and show the visitor no reason, and one button in the ACP deletes all of them while leaving other bans alone.
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><a href="docs/images/sfscompanion-acp-honeypot-trips.png"><img src="docs/images/sfscompanion-acp-honeypot-trips.png" width="280" alt="The Honeypot trips log in the ACP"></a><br>Honeypot trips log</td>
+    <td align="center"><a href="docs/images/sfscompanion-acp-blocks.png"><img src="docs/images/sfscompanion-acp-blocks.png" width="280" alt="The Spam blocks log in the ACP"></a><br>Spam blocks log</td>
+    <td align="center"><a href="docs/images/sfscompanion-profile-link.png"><img src="docs/images/sfscompanion-profile-link.png" width="280" alt="The Check via StopForumSpam link on a member's profile, highlighted"></a><br>Profile lookup link (highlighted)</td>
+  </tr>
+</table>
+
+Click a screenshot for the full size. All screenshots, including the honeypot settings and the SFS errors log, are on the [Screenshots wiki page](https://github.com/phpbbmodders/sfscompanion/wiki/Screenshots).
+
 ## Requirements
 
 - phpBB 3.3.19 or later
