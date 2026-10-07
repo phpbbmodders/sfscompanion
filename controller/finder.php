@@ -54,7 +54,7 @@ class finder
 	{
 		if (!($this->auth->acl_get('a_') || $this->auth->acl_get('m_chk_sfs')))
 		{
-			trigger_error($this->user->lang['NOT_AUTHORISED']);
+			throw new \phpbb\exception\http_exception(403, 'NOT_AUTHORISED');
 		}
 
 		$id = $this->request->variable('u', 0);

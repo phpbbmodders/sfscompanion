@@ -1,0 +1,101 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{L_ACP_SFSC_HONEYPOT}</h1>
+
+<p>{L_ACP_SFSC_HONEYPOT_EXPLAIN}</p>
+
+<form id="acp_sfs_honeypot" method="post" action="{U_ACTION}">
+	<fieldset>
+		<legend>{L_ACP_SFSC_HONEYPOT}</legend>
+		<dl>
+			<dt><label>{L_SFSC_HP_ENABLED}{L_COLON}</label><br /><span>{L_SFSC_HP_ENABLED_EXPLAIN}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="sfsc_hp_enabled" value="1"<!-- IF SFSC_HP_ENABLED --> checked="checked"<!-- ENDIF --> /> {L_YES}</label>
+				<label><input type="radio" class="radio" name="sfsc_hp_enabled" value="0"<!-- IF not SFSC_HP_ENABLED --> checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label>{L_SFSC_HP_CHECK_REGISTER}{L_COLON}</label></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="sfsc_hp_check_register" value="1"<!-- IF SFSC_HP_CHECK_REGISTER --> checked="checked"<!-- ENDIF --> /> {L_YES}</label>
+				<label><input type="radio" class="radio" name="sfsc_hp_check_register" value="0"<!-- IF not SFSC_HP_CHECK_REGISTER --> checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label>{L_SFSC_HP_CHECK_POSTING}{L_COLON}</label></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="sfsc_hp_check_posting" value="1"<!-- IF SFSC_HP_CHECK_POSTING --> checked="checked"<!-- ENDIF --> /> {L_YES}</label>
+				<label><input type="radio" class="radio" name="sfsc_hp_check_posting" value="0"<!-- IF not SFSC_HP_CHECK_POSTING --> checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label>{L_SFSC_HP_CHECK_PM}{L_COLON}</label></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="sfsc_hp_check_pm" value="1"<!-- IF SFSC_HP_CHECK_PM --> checked="checked"<!-- ENDIF --> /> {L_YES}</label>
+				<label><input type="radio" class="radio" name="sfsc_hp_check_pm" value="0"<!-- IF not SFSC_HP_CHECK_PM --> checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="sfsc_hp_min_seconds">{L_SFSC_HP_MIN_SECONDS}{L_COLON}</label><br /><span>{L_SFSC_HP_MIN_SECONDS_EXPLAIN}</span></dt>
+			<dd><input type="number" min="0" max="300" id="sfsc_hp_min_seconds" name="sfsc_hp_min_seconds" value="{SFSC_HP_MIN_SECONDS}" /> {L_SFSC_HP_SECONDS}</dd>
+		</dl>
+		<dl>
+			<dt><label for="sfsc_hp_notify_posts">{L_SFSC_HP_NOTIFY_POSTS}{L_COLON}</label><br /><span>{L_SFSC_HP_NOTIFY_POSTS_EXPLAIN}</span></dt>
+			<dd><input type="number" min="0" max="99999" id="sfsc_hp_notify_posts" name="sfsc_hp_notify_posts" value="{SFSC_HP_NOTIFY_POSTS}" /> {L_SFSC_HP_POSTS}</dd>
+		</dl>
+		<dl>
+			<dt><label for="sfsc_hp_expire_days">{L_SFSC_HP_EXPIRE_DAYS}{L_COLON}</label><br /><span>{L_SFSC_HP_EXPIRE_DAYS_EXPLAIN}</span></dt>
+			<dd><input type="number" min="0" max="9999" id="sfsc_hp_expire_days" name="sfsc_hp_expire_days" value="{SFSC_HP_EXPIRE_DAYS}" /> {L_DAYS}</dd>
+		</dl>
+
+	</fieldset>
+
+	<fieldset>
+		<legend>{L_SFSC_HP_AUTO_BAN}</legend>
+		<p>{L_SFSC_HP_AUTO_BAN_EXPLAIN}</p>
+		<dl>
+			<dt><label for="sfsc_hp_ban_threshold">{L_SFSC_HP_BAN_THRESHOLD}{L_COLON}</label><br /><span>{L_SFSC_HP_BAN_THRESHOLD_EXPLAIN}</span></dt>
+			<dd><input type="number" min="0" max="999" id="sfsc_hp_ban_threshold" name="sfsc_hp_ban_threshold" value="{SFSC_HP_BAN_THRESHOLD}" /> {L_SFSC_HP_TRIPS}</dd>
+		</dl>
+		<dl>
+			<dt><label for="sfsc_hp_ban_window_hours">{L_SFSC_HP_BAN_WINDOW}{L_COLON}</label></dt>
+			<dd><input type="number" min="1" max="8760" id="sfsc_hp_ban_window_hours" name="sfsc_hp_ban_window_hours" value="{SFSC_HP_BAN_WINDOW_HOURS}" /> {L_SFSC_HP_HOURS}</dd>
+		</dl>
+		<dl>
+			<dt><label for="sfsc_hp_ban_days">{L_SFSC_HP_BAN_DAYS}{L_COLON}</label><br /><span>{L_SFSC_HP_BAN_DAYS_EXPLAIN}</span></dt>
+			<dd><input type="number" min="0" max="9999" id="sfsc_hp_ban_days" name="sfsc_hp_ban_days" value="{SFSC_HP_BAN_DAYS}" /> {L_DAYS}</dd>
+		</dl>
+		<dl>
+			<dt><label>{L_SFSC_HP_BAN_MATCH}{L_COLON}</label></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="sfsc_hp_ban_match" value="0"<!-- IF SFSC_HP_BAN_MATCH == 0 --> checked="checked"<!-- ENDIF --> /> {L_SFSC_HP_BAN_MATCH_IP}</label><br />
+				<label><input type="radio" class="radio" name="sfsc_hp_ban_match" value="1"<!-- IF SFSC_HP_BAN_MATCH == 1 --> checked="checked"<!-- ENDIF --> /> {L_SFSC_HP_BAN_MATCH_IP_EMAIL}</label><br />
+				<label><input type="radio" class="radio" name="sfsc_hp_ban_match" value="2"<!-- IF SFSC_HP_BAN_MATCH == 2 --> checked="checked"<!-- ENDIF --> /> {L_SFSC_HP_BAN_MATCH_ANY}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label>{L_SFSC_HP_BAN_COUNTS}{L_COLON}</label></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="sfsc_hp_ban_all_reasons" value="0"<!-- IF not SFSC_HP_BAN_ALL_REASONS --> checked="checked"<!-- ENDIF --> /> {L_SFSC_HP_BAN_COUNTS_FIELD}</label><br />
+				<label><input type="radio" class="radio" name="sfsc_hp_ban_all_reasons" value="1"<!-- IF SFSC_HP_BAN_ALL_REASONS --> checked="checked"<!-- ENDIF --> /> {L_SFSC_HP_BAN_COUNTS_ALL}</label>
+			</dd>
+		</dl>
+	</fieldset>
+
+	<fieldset class="submit-buttons">
+		<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />
+	</fieldset>
+
+	<fieldset>
+		<legend>{L_SFSC_HP_DELETE_AUTO_BANS}</legend>
+		<dl>
+			<dt><label>{L_SFSC_HP_DELETE_AUTO_BANS}{L_COLON}</label><br /><span>{L_SFSC_HP_DELETE_AUTO_BANS_EXPLAIN}</span></dt>
+			<dd>{L_SFSC_HP_AUTO_BAN_COUNT}{L_COLON} <strong>{SFSC_HP_AUTO_BAN_COUNT}</strong><br />
+				<input class="button2" type="submit" name="delete_auto_bans" value="{L_SFSC_HP_DELETE_AUTO_BANS}" /></dd>
+		</dl>
+	</fieldset>
+
+	{S_FORM_TOKEN}
+</form>
+
+<!-- INCLUDE overall_footer.html -->

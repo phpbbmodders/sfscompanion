@@ -1,0 +1,45 @@
+PROJECT: phpBB (PHPBB)
+ISSUE TYPE: Improvement
+SUMMARY: Expose address_list in core.ucp_pm_compose_modify_parse_after
+PRIORITY: Minor
+COMPONENT: Events
+AFFECTS VERSION: 3.3.x
+
+TYPE
+====
+PHP event (extend an existing event's variables)
+
+LOCATION
+========
+includes/ucp/ucp_pm_compose.php, core.ucp_pm_compose_modify_parse_after
+(~line 922, immediately before "if (!count($error) && $submit)").
+
+PURPOSE
+=======
+core.ucp_pm_compose_modify_parse_after already fires at exactly the
+right point for validating a PM before it's sent, and already exposes
+$error and $submit. It does not expose $address_list - the recipient
+list, already fully built earlier in the same function - so an
+extension can reject a PM but cannot inspect who it's actually being
+sent to.
+
+USE CASE
+========
+phpbbmodders/sfscompanion's honeypot silently restricts an account to a group that
+can't post/reply after it trips a hidden-field honeypot check, and
+that group should also only be able to PM staff, not regular members -
+but there's no way to inspect the intended recipients from this or any
+other PM-composing event, so that half of the restriction can't be
+enforced yet. No new event needed, no change to where this fires -
+just one more variable in an event that already exists and already
+fires in the right place.
+
+VARIABLES
+=========
+- address_list (array, read-only) - recipients, keyed 'u' (user ids)
+  and 'g' (group ids), each mapping id => 'to'|'bcc'
+
+Add to the existing $vars array and docblock:
+
+	* @var  array   address_list        Array of recipients, keyed 'u' (user ids)
+	*                                    and 'g' (group ids), each mapping id => 'to'|'bcc'

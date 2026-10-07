@@ -1,0 +1,9 @@
+/* SFS Companion ACP pages */
+table.sfs-scan-results tr.spam { background-color: #ffdddd; }
+table.sfs-scan-results tr.em_spam { background-color: #fff3cd; }
+table.sfs-scan-results tr.ip { background-color: #fff3cd; }
+table.sfs-scan-results td.sfs-fail-chk { color: #a00; }
+
+.sfsc-center {
+	text-align: center;
+}
