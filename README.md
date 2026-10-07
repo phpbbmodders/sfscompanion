@@ -10,6 +10,18 @@ Companion tools for the Stop Forum Spam extension: browse what it blocked, and l
 - **Scan users** — lists recently-registered users and checks each one against StopForumSpam inline, with a one-click report-and-remove action
 - **Check SFS** — a manual lookup link on member profiles and in the ACP user overview (gated by a dedicated `m_chk_sfs` permission, so it can be delegated to moderators without full admin rights)
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><a href="docs/images/sfscompanion-acp-blocks.png"><img src="docs/images/sfscompanion-acp-blocks.png" width="280" alt="The Spam blocks log in the ACP"></a><br>Spam blocks log</td>
+    <td align="center"><a href="docs/images/sfscompanion-acp-errors.png"><img src="docs/images/sfscompanion-acp-errors.png" width="280" alt="The SFS errors log in the ACP"></a><br>SFS errors log</td>
+    <td align="center"><a href="docs/images/sfscompanion-profile-link.png"><img src="docs/images/sfscompanion-profile-link.png" width="280" alt="The Check via StopForumSpam link on a member's profile, highlighted"></a><br>Profile lookup link (highlighted)</td>
+  </tr>
+</table>
+
+Click a screenshot for the full size. The settings page is in [`docs/images`](docs/images) too.
+
 ## Requirements
 
 - phpBB 3.3.19 or later
