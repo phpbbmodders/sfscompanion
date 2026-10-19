@@ -444,10 +444,10 @@ class main_module
 
 				'USER_REG_DATE'		=> $user->format_date($row['user_regdate']),
 				'LAST_VISIT'		=> ($row['user_lastvisit']) ? $user->format_date($row['user_lastvisit']) : $user->lang['NEVER'],
-				'USER_NAME'			=> '<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=viewprofile&amp;u=' . (int) $row['user_id']) . '">' . htmlspecialchars($row['username']) . '</a>',
-				'USER_EMAIL'		=> htmlspecialchars($row['user_email']),
+				'USER_NAME'			=> '<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=viewprofile&amp;u=' . (int) $row['user_id']) . '">' . utf8_htmlspecialchars($row['username']) . '</a>',
+				'USER_EMAIL'		=> utf8_htmlspecialchars($row['user_email']),
 				'USER_POSTS'		=> $row['user_posts'],
-				'USER_IP'			=> (!empty($row['user_ip'])) ? htmlspecialchars($row['user_ip']) : $user->lang['SFSC_READ_COMMENT'],
+				'USER_IP'			=> (!empty($row['user_ip'])) ? utf8_htmlspecialchars($row['user_ip']) : $user->lang['SFSC_READ_COMMENT'],
 				'U_POSTS'			=> append_sid("{$phpbb_root_path}search.$phpEx", 'author_id=' . (int) $row['user_id'] . '&sr=posts'),
 				'S_USER_IP'			=> (!empty($row['user_ip'])) ? $this->u_action . '&amp;whois=true&amp;ip=' . $row['user_ip'] : '',
 				'U_FULL_CHECK'		=> $this->u_action . '&amp;full_check=true&amp;ch_user=' . (int) $row['user_id'],
