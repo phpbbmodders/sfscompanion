@@ -26,6 +26,8 @@ jobs:
     uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
     with:
       EXTNAME: phpbbmodders/sfscompanion
+      # EPV runs in the epv job below instead
+      EPV: 0
 
       RUN_MYSQL_JOBS: 0
       RUN_PGSQL_JOBS: 0
@@ -34,3 +36,10 @@ jobs:
 
       PRIMARY_PHP_VERSION: '8.2'
       PHP_VERSION_MATRIX: '["8.0", "8.1", "8.2", "8.3", "8.4"]'
+
+  # EPV (Extension Pre Validator), failing on any Fatal or Error finding not
+  # listed in .github/epv-allowed.txt
+  epv:
+    uses: phpbbmodders/.github/.github/workflows/epv.yml@v1
+    with:
+      EXTNAME: phpbbmodders/sfscompanion

@@ -368,9 +368,9 @@ class functions
 			'FIND_MAIL'		=> ($em) ? sprintf($this->user->lang['SFSC_EMAIL_FIND'], $freq['email']) : $this->user->lang['SFSC_EMAIL_NOT_FIND'],
 			'FIND_NICK'		=> ($nick) ? sprintf($this->user->lang['SFSC_NICK_FIND'], $freq['username']) : $this->user->lang['SFSC_NICK_NOT_FIND'],
 
-			'USER'			=> htmlspecialchars($row['username']),
-			'IP'			=> htmlspecialchars($row['user_ip']),
-			'EMAIL'			=> htmlspecialchars($row['user_email']),
+			'USER'			=> utf8_htmlspecialchars($row['username']),
+			'IP'			=> utf8_htmlspecialchars($row['user_ip']),
+			'EMAIL'			=> utf8_htmlspecialchars($row['user_email']),
 
 			'REPORT'		=> $report,
 			'CLASS'			=> $report_img,
