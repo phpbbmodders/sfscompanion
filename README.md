@@ -28,7 +28,7 @@ Click a screenshot for the full size. All screenshots, including the honeypot se
 ## Requirements
 
 - phpBB 3.3.19 or later
-- PHP 8.0 or later
+- PHP 8.1 or later
 - [phpbbmodders/stopforumspam](https://github.com/phpbbmodders/stopforumspam) installed and enabled. This extension won't enable without it.
 
 ## Installation
